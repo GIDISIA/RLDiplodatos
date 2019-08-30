@@ -1,0 +1,44 @@
+# Cambios para 2019
+- Viernes 18/10:
+  - Teoríco
+    - Diferencia entre RL, Aprendizaje Supervisado y Aprendizaje No Supervisado.
+    - Modelo Agente-Entorno.
+    - Agente situado.
+    - Aprendizaje por Refuerzos
+    - MDP
+    - Montecarlo
+    - Explicar trade off entre exploración y explotación.
+      - Usar Windworld estocastico para mostrar la diferencia entre "optimistic-greedy", "e-greedy" y "softmax".
+    - SARSA y Q-Learning
+    - Explicar Bootstrapping
+  - Práctico
+    - Ejemplos practicos basados en la ESI.
+
+- Sabado 19/10:
+  - Práctico:
+    - SARSA y Q-Learning en el entorno "The Cliff".
+    - Implementar SARSA y Q-Learning con política Softmax
+  - Teoríco:
+    - N-Step generalizado (ver libro de sutton)
+  - Lab1: Implementar N-step generalizado y comparar con SARSA y Q-Learning
+    - Puntos a comparar:
+      - On Policy vs Off policy.
+      - Diferentes valores de N.
+
+- Viernes 25/10:
+  - Teoríco:
+    - Métodos aproximados
+    - Deep RL.
+    - Problemas (Triada Mortal)
+    - DQN
+  - Practico:
+    - Lab del año pasado.
+
+- Sabado 26/10:
+  - Teoríco:
+    - Mejoras de DQN (DDQN, Dueling DDQN)
+  - Practico
+    - Implementar alguno de los siguientes algoritmos:
+      - ACER
+      - A2C
+      - PER
