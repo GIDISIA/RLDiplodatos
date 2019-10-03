@@ -1,0 +1,13 @@
+name: python37_rl
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - gym
+  - gym[atari]
+  - numpy
+  - matplotlib
+  - torch
+
+
