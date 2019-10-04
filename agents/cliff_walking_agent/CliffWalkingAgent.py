@@ -1,15 +1,14 @@
 import gym
 import six
 import numpy as np
-from gym.envs.registration import register
 
 
-class FrozenLakeAgent:
+class CliffWalkingAgent:
 
     def __init__(self):
 
         # basic configuration
-        self._environment_name = "FrozenLake-v0"
+        self._environment_name = "CliffWalking-v0"
         self._environment_instance = None  # (note that the "None" variables have values yet to be assigned)
         self.random_state = None  # type: np.random.RandomState
         self._cutoff_time = None
@@ -76,35 +75,18 @@ class FrozenLakeAgent:
         # q values are restarted
         self.q = {}
 
-    def init_agent(self, is_slippery=False):
+    def init_agent(self):
         """
         Initializes the reinforcement learning agent with a default configuration.
         """
 
-        #if is_slippery:
-        #    self._environment_instance = gym.make('FrozenLake-v0')
-        #else:
-        #    # A Frozen Lake environment is registered with Slippery turned as False so it is deterministic
-        #    register(id='FrozenLakeNotSlippery-v0',
-        #             entry_point='gym.envs.toy_text:FrozenLakeEnv',
-        #             kwargs={'map_name': '4x4', 'is_slippery': False},
-        #             max_episode_steps=100,
-        #             reward_threshold=0.78)
-
-
-        self._environment_instance = gym.make('CliffWalking-v0')
+        self._environment_instance = gym.make(self._environment_name)
 
         self.actions = range(self._environment_instance.action_space.n)
 
         # environment is seeded
         if self.random_state is None:
             self.random_state = np.random.RandomState()
-
-        #if self.display_video:
-        #    # video_callable=lambda count: count % 10 == 0)
-        #    self._environment_instance = gym.wrappers.Monitor(self._environment_instance,
-        #                                                      '/tmp/frozenlake-experiment-1',
-        #                                                      force=True)
 
     def run(self):
         """
@@ -119,12 +101,15 @@ class FrozenLakeAgent:
             # a number of four digits representing the actual state is obtained
             state = observation
 
+            episode_reward = 0
+
             for t in range(self._cutoff_time):
 
                 # Pick an action based on the current state
                 action = self.choose_action(state)
                 # Execute the action and get feedback
                 observation, reward, done, info = self._environment_instance.step(action)
+                episode_reward += reward
 
                 # current state transition is saved
                 self.action_reward_state_trace.append([action, reward, observation])
@@ -132,19 +117,14 @@ class FrozenLakeAgent:
                 # Digitize the observation to get a state
                 next_state = observation
 
-                if not done:
+                if not done and reward != -100:  # -100 reward equals to falling into the cliff
                     self.learn(state, action, reward, next_state)
                     state = next_state
                 else:
-                    if reward == 0:  # episode finished because the agent fell into a hole
 
-                        # the default reward can be overrided by a hand-made reward (below) for example to punish the
-                        # agent for falling into a hole
-                        reward = 0  # replace this number to override the reward
-
-                    self.learn(state, action, reward, next_state)
+                    self.learn(state, action, reward, None)
                     self.timesteps_of_episode = np.append(self.timesteps_of_episode, [int(t + 1)])
-                    self.reward_of_episode = np.append(self.reward_of_episode, reward)
+                    self.reward_of_episode = np.append(self.reward_of_episode, episode_reward)
                     break
 
         return self.reward_of_episode.mean()
@@ -180,7 +160,7 @@ class FrozenLakeAgent:
         Q-learning update:
         Q(s, a) += alpha * (reward(s,a) + max(Q(s') - Q(s,a))
         """
-        new_max_q = max([self.q.get((next_state, a), 0.0) for a in self.actions])
+        new_max_q = max([self.q.get((next_state, a), 0.0) for a in self.actions]) if next_state else 0
         old_value = self.q.get((state, action), 0.0)
 
         self.q[(state, action)] = old_value + self._alpha * (reward + self._gamma * new_max_q - old_value)

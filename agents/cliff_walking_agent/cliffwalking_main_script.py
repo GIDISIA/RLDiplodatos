@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from agents.frozen_lake_agent import FrozenLakeAgent as fP
+from agents.cliff_walking_agent import CliffWalkingAgent as cW
 import itertools
 
 # definimos sus híper-parámetros básicos
@@ -18,25 +18,21 @@ is_slippery = False
 # se declara una semilla aleatoria
 random_state = np.random.RandomState(47)
 
-# el tiempo de corte del agente son 100 time-steps
-cutoff_time = 100
+# el tiempo de corte del agente son 1000 time-steps
+cutoff_time = 1000
 
 # instanciamos nuestro agente
-agent = fP.FrozenLakeAgent()
+agent = cW.CliffWalkingAgent()
 
 agent.set_hyper_parameters({"alpha": alpha, "gamma": gamma, "epsilon": epsilon})
 
 agent.random_state = random_state
 
-# declaramos como True la variable de mostrar video, para ver en tiempo real cómo aprende el agente. Borrar esta línea
-# para acelerar la velocidad del aprendizaje
-agent.display_video = True
-
-# establece el tiempo de
+# establece el tiempo de corte de cada episodio
 agent.set_cutoff_time(cutoff_time)
 
 # inicializa el agente
-agent.init_agent(is_slippery=is_slippery)  # slippery es establecido en False por defecto
+agent.init_agent()
 
 # reinicializa el conocimiento del agente
 agent.restart_agent_learning()
@@ -44,11 +40,7 @@ agent.restart_agent_learning()
 # se realiza la ejecución del agente
 avg_steps_per_episode = agent.run()
 
-# se muestra la curva de convergencia de las recompensas
 episode_rewards = np.array(agent.reward_of_episode)
-plt.scatter(np.array(range(0, len(episode_rewards))), episode_rewards, s=0.7)
-plt.title('Recompensa por episodio')
-plt.show()
 
 # se suaviza la curva de convergencia
 episode_number = np.linspace(1, len(episode_rewards) + 1, len(episode_rewards) + 1)
@@ -81,14 +73,14 @@ plt.show()
 # ---
 
 # se procede con los cálculos previos a la graficación de la matriz de valor
-value_matrix = np.zeros((4, 4))
+value_matrix = np.empty((4, 12))
 for row in range(4):
-    for column in range(4):
+    for column in range(12):
 
         state_values = []
 
         for action in range(4):
-            state_values.append(agent.q.get((row * 4 + column, action), 0))
+            state_values.append(agent.q.get((row * 4 + column, action), -1000))
 
         maximum_value = max(state_values)  # como usamos epsilon-greedy, determinamos la acción que arroja máximo valor
         state_values.remove(maximum_value)  # removemos el ítem asociado con la acción de máximo valor
@@ -102,7 +94,7 @@ for row in range(4):
             value_matrix[row, column] += epsilon/4 * non_maximum_value
 
 # el valor del estado objetivo se asigna en 1 (reward recibido al llegar) para que se coloree de forma apropiada
-value_matrix[3, 3] = 1
+value_matrix[3, 11] = -1
 
 # se grafica la matriz de valor
 plt.imshow(value_matrix, cmap=plt.cm.RdYlGn)
@@ -114,10 +106,10 @@ thresh = value_matrix.max() / 2.
 
 for row, column in itertools.product(range(value_matrix.shape[0]), range(value_matrix.shape[1])):
 
-    left_action = agent.q.get((row * 4 + column, 0), 0)
-    down_action = agent.q.get((row * 4 + column, 1), 0)
-    right_action = agent.q.get((row * 4 + column, 2), 0)
-    up_action = agent.q.get((row * 4 + column, 3), 0)
+    left_action = agent.q.get((row * 4 + column, 3), -1000)
+    down_action = agent.q.get((row * 4 + column, 2), -1000)
+    right_action = agent.q.get((row * 4 + column, 1), -1000)
+    up_action = agent.q.get((row * 4 + column, 0), -1000)
     
     arrow_direction = '↓'
     best_action = down_action
@@ -134,7 +126,7 @@ for row, column in itertools.product(range(value_matrix.shape[0]), range(value_m
     if best_action == 0:
         arrow_direction = ''
    
-    #notar que column, row están invertidos en orden en la línea de abajo porque representan a x,y del plot
+    # notar que column, row están invertidos en orden en la línea de abajo porque representan a x,y del plot
     plt.text(column, row, arrow_direction, horizontalalignment="center")
     
 plt.xticks([])
