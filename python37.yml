@@ -1,5 +1,0 @@
-name: python37
-channels:
-  - defaults
-prefix: /home/juan/anaconda3/envs/python37
-
