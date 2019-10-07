@@ -117,11 +117,10 @@ class CliffWalkingAgent:
                 # Digitize the observation to get a state
                 next_state = observation
 
-                if not done and reward != -100:  # -100 reward equals to falling into the cliff
+                if not done:
                     self.learn(state, action, reward, next_state)
                     state = next_state
                 else:
-
                     self.learn(state, action, reward, None)
                     self.timesteps_of_episode = np.append(self.timesteps_of_episode, [int(t + 1)])
                     self.reward_of_episode = np.append(self.reward_of_episode, episode_reward)

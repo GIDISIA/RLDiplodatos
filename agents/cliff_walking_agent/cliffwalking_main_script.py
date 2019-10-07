@@ -8,7 +8,7 @@ import itertools
 
 # definimos sus híper-parámetros básicos
 
-alpha = 0.5
+alpha = 0.15
 gamma = 0.9
 epsilon = 0.1
 tau = 25
@@ -25,6 +25,7 @@ cutoff_time = 1000
 agent = cW.CliffWalkingAgent()
 
 agent.set_hyper_parameters({"alpha": alpha, "gamma": gamma, "epsilon": epsilon})
+agent.episodes_to_run = 3000
 
 agent.random_state = random_state
 
@@ -72,15 +73,19 @@ plt.show()
 
 # ---
 
+n_rows = 4
+n_columns = 12
+n_actions = 4
+
 # se procede con los cálculos previos a la graficación de la matriz de valor
-value_matrix = np.empty((4, 12))
-for row in range(4):
-    for column in range(12):
+value_matrix = np.empty((n_rows, n_columns))
+for row in range(n_rows):
+    for column in range(n_columns):
 
         state_values = []
 
-        for action in range(4):
-            state_values.append(agent.q.get((row * 4 + column, action), -1000))
+        for action in range(n_actions):
+            state_values.append(agent.q.get((row * n_columns + column, action), -10))
 
         maximum_value = max(state_values)  # como usamos epsilon-greedy, determinamos la acción que arroja máximo valor
         state_values.remove(maximum_value)  # removemos el ítem asociado con la acción de máximo valor
@@ -88,10 +93,10 @@ for row in range(4):
         # el valor de la matriz para la mejor acción es el máximo valor por la probabilidad de que el mismo sea elegido
         # (que es 1-epsilon por la probabilidad de explotación más 1/4 * epsilon por probabilidad de que sea elegido al
         # azar cuando se opta por una acción exploratoria)
-        value_matrix[row, column] = maximum_value * (1 - epsilon + 1/4 * epsilon)
+        value_matrix[row, column] = maximum_value * (1 - epsilon + 1/n_actions * epsilon)
 
         for non_maximum_value in state_values:
-            value_matrix[row, column] += epsilon/4 * non_maximum_value
+            value_matrix[row, column] += epsilon/n_actions * non_maximum_value
 
 # el valor del estado objetivo se asigna en 1 (reward recibido al llegar) para que se coloree de forma apropiada
 value_matrix[3, 11] = -1
@@ -106,10 +111,10 @@ thresh = value_matrix.max() / 2.
 
 for row, column in itertools.product(range(value_matrix.shape[0]), range(value_matrix.shape[1])):
 
-    left_action = agent.q.get((row * 4 + column, 3), -1000)
-    down_action = agent.q.get((row * 4 + column, 2), -1000)
-    right_action = agent.q.get((row * 4 + column, 1), -1000)
-    up_action = agent.q.get((row * 4 + column, 0), -1000)
+    left_action = agent.q.get((row * n_columns + column, 3), -1000)
+    down_action = agent.q.get((row * n_columns + column, 2), -1000)
+    right_action = agent.q.get((row * n_columns + column, 1), -1000)
+    up_action = agent.q.get((row * n_columns + column, 0), -1000)
     
     arrow_direction = '↓'
     best_action = down_action
@@ -123,7 +128,7 @@ for row, column in itertools.product(range(value_matrix.shape[0]), range(value_m
     if best_action < up_action:
         arrow_direction = '↑'
         best_action = up_action
-    if best_action == 0:
+    if best_action == -1:
         arrow_direction = ''
    
     # notar que column, row están invertidos en orden en la línea de abajo porque representan a x,y del plot
