@@ -9,10 +9,9 @@ import itertools
 # definimos sus híper-parámetros básicos
 
 alpha = 0.15
-gamma = 0.9
+gamma = 1
 epsilon = 0.1
 tau = 25
-is_slippery = False
 
 
 # se declara una semilla aleatoria
