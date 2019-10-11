@@ -6,25 +6,27 @@
     - Agente situado.
     - Aprendizaje por Refuerzos
     - MDP
-    - Montecarlo
-    - Explicar trade off entre exploración y explotación.
-      - Usar Windworld estocastico para mostrar la diferencia entre "optimistic-greedy", "e-greedy" y "softmax".
-    - SARSA y Q-Learning
-    - Explicar Bootstrapping
   - Práctico
-    - Ejemplos practicos basados en la ESI.
+    - Ejemplos practicos basados en la ECI.
+	
+RECREO
 
-- Sabado 19/10:
+  - Teoríco
+    - Explicar trade off entre exploración y explotación.
+    - SARSA
+      - Usar The Cliff para mostrar "e-greedy".
   - Práctico:
-    - SARSA y Q-Learning en el entorno "The Cliff".
-    - Implementar SARSA y Q-Learning con política Softmax
-  - Teoríco:
-    - N-Step generalizado (ver libro de sutton)
-  - Lab1: Implementar N-step generalizado y comparar con SARSA y Q-Learning
-    - Puntos a comparar:
-      - On Policy vs Off policy.
-      - Diferentes valores de N.
+    - Implementar SARSA en "The Cliff".
+    
+- Sabado 19/10:
+    - Explicar Bootstrapping y Q-Learning
 
+RECREO
+
+  - Práctico:
+    - Q-Learning en el entorno "The Cliff".
+    - Opcional: Implementar SARSA y Q-Learning con política Softmax
+  
 - Viernes 25/10:
   - Teoríco:
     - Métodos aproximados
@@ -36,9 +38,7 @@
 
 - Sabado 26/10:
   - Teoríco:
-    - Mejoras de DQN (DDQN, Dueling DDQN)
+    - Mejoras de DQN (DDQN, Dueling DDQN, PER)
   - Practico
     - Implementar alguno de los siguientes algoritmos:
-      - ACER
-      - A2C
-      - PER
+      - DDQN, Dueling DDQN, Cambiar el entorno | Hasta aquí se aprueba | PER
