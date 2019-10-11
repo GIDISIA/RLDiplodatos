@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from utils.memory.Transition import Transition
+from agents.utils.memory.Transition import Transition
 
 
 class ReplayMemory(object):
