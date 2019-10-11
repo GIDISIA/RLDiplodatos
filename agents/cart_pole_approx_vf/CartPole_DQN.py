@@ -8,8 +8,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from matplotlib import pyplot as plt
-from utils.memory.ReplayMemory import ReplayMemory
-from utils.memory.Transition import Transition
+from agents.utils.memory.ReplayMemory import ReplayMemory
+from agents.utils.memory.Transition import Transition
 
 
 class Net(nn.Module):
