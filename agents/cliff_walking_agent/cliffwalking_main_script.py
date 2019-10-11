@@ -8,7 +8,7 @@ import itertools
 
 # definimos sus híper-parámetros básicos
 
-alpha = 0.15
+alpha = 0.5
 gamma = 1
 epsilon = 0.1
 tau = 25
@@ -92,10 +92,7 @@ for row in range(n_rows):
         # el valor de la matriz para la mejor acción es el máximo valor por la probabilidad de que el mismo sea elegido
         # (que es 1-epsilon por la probabilidad de explotación más 1/4 * epsilon por probabilidad de que sea elegido al
         # azar cuando se opta por una acción exploratoria)
-        value_matrix[row, column] = maximum_value * (1 - epsilon + 1/n_actions * epsilon)
-
-        for non_maximum_value in state_values:
-            value_matrix[row, column] += epsilon/n_actions * non_maximum_value
+        value_matrix[row, column] = maximum_value
 
 # el valor del estado objetivo se asigna en 1 (reward recibido al llegar) para que se coloree de forma apropiada
 value_matrix[3, 11] = -1

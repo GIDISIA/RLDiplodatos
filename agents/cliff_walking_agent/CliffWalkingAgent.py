@@ -117,7 +117,7 @@ class CliffWalkingAgent:
                 # Digitize the observation to get a state
                 next_state = observation
 
-                if not done and t < self._cutoff_time-1:
+                if not done:
                     self.learn(state, action, reward, next_state)
                     state = next_state
                 else:
