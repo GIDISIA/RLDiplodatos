@@ -9,12 +9,12 @@ from sklearn.linear_model import SGDRegressor
 
 
 class SGDCartPoleSolver:
-    def __init__(self, n_episodes=1000, max_env_steps=None, gamma=0.5, epsilon=1.0, epsilon_min=0.01,
+    def __init__(self, env, n_episodes=1000, max_env_steps=None, gamma=0.5, epsilon=1.0, epsilon_min=0.01,
                  epsilon_decay=0.005, alpha=0.001, batch_size=32, debug=False):
 
         self.debug = debug
         self.memory = deque(maxlen=100000)
-        self.env = gym.make('CartPole-v0')
+        self.env = env
 
         # hyper-parameter setting
         self.gamma = gamma
@@ -103,7 +103,7 @@ class SGDCartPoleSolver:
             scores100.append(cum_reward)
             scores.append(cum_reward)
             mean_score = np.mean(scores100)
-            if e % 10 == 0 and self.debug:
+            if e % 100 == 0 and self.debug:
                 print('[Episode {}] - Mean reward over last 100 episodes was {}.'.format(e, mean_score))
 
         print('[Episode {}] - Mean Mean reward over last 100 episodes was {}.'.format(e, mean_score))
@@ -111,5 +111,5 @@ class SGDCartPoleSolver:
 
 
 if __name__ == '__main__':
-    agent = SGDCartPoleSolver(debug=True)
+    agent = SGDCartPoleSolver(gym.make('CartPole-v0'), debug=True)
     agent.run()
