@@ -203,7 +203,7 @@ class DQN:
             scores.append(cum_reward)
             mean_score = np.mean(scores)
             mean_scores.append(mean_score)
-            if e % 10 == 0 and self.debug:
+            if e % 100 == 0 and self.debug:
                 print('[Episode {}] - Mean reward {}.'.format(e, mean_score))
 
         # noinspection PyUnboundLocalVariable
