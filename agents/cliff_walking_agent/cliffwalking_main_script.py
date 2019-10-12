@@ -21,7 +21,7 @@ random_state = np.random.RandomState(42)
 agent = cW.CliffWalkingAgent()
 
 agent.set_hyper_parameters({"alpha": alpha, "gamma": gamma, "epsilon": epsilon})
-agent.episodes_to_run = 3000
+agent.episodes_to_run = 500
 
 agent.random_state = random_state
 
@@ -72,7 +72,7 @@ n_columns = 12
 n_actions = 4
 
 # se procede con los cálculos previos a la graficación de la matriz de valor
-value_matrix = np.empty((n_rows, n_columns))
+q_value_matrix = np.empty((n_rows, n_columns))
 for row in range(n_rows):
     for column in range(n_columns):
 
@@ -81,26 +81,26 @@ for row in range(n_rows):
         for action in range(n_actions):
             state_values.append(agent.q.get((row * n_columns + column, action), -100))
 
-        maximum_value = max(state_values)  # como usamos epsilon-greedy, determinamos la acción que arroja máximo valor
-        state_values.remove(maximum_value)  # removemos el ítem asociado con la acción de máximo valor
+        maximum_value = max(state_values)  # determinamos la acción que arroja máximo valor
+
 
         # el valor de la matriz para la mejor acción es el máximo valor por la probabilidad de que el mismo sea elegido
         # (que es 1-epsilon por la probabilidad de explotación más 1/4 * epsilon por probabilidad de que sea elegido al
         # azar cuando se opta por una acción exploratoria)
-        value_matrix[row, column] = maximum_value
+        q_value_matrix[row, column] = maximum_value
 
 # el valor del estado objetivo se asigna en 1 (reward recibido al llegar) para que se coloree de forma apropiada
-value_matrix[3, 11] = 1
+q_value_matrix[3, 11] = 1
 
 # se grafica la matriz de valor
-plt.imshow(value_matrix, cmap=plt.cm.RdYlGn)
+plt.imshow(q_value_matrix, cmap=plt.cm.RdYlGn)
 plt.tight_layout()
 plt.colorbar()
 
 fmt = '.2f'
-thresh = value_matrix.max() / 2.
+thresh = q_value_matrix.max() / 2.
 
-for row, column in itertools.product(range(value_matrix.shape[0]), range(value_matrix.shape[1])):
+for row, column in itertools.product(range(q_value_matrix.shape[0]), range(q_value_matrix.shape[1])):
 
     left_action = agent.q.get((row * n_columns + column, 3), -1000)
     down_action = agent.q.get((row * n_columns + column, 2), -1000)
@@ -129,6 +129,6 @@ plt.xticks([])
 plt.yticks([])
 plt.show()
 
-print('\n Matriz de valor (en números): \n\n', value_matrix)
+print('\n Matriz de valor (en números): \n\n', q_value_matrix)
 
 agent.destroy_agent()

@@ -108,7 +108,6 @@ class CliffWalkingAgent:
                 
                 episode_reward += reward
 
-                # Digitize the observation to get a state
                 next_state = observation
 
                 if not done:
