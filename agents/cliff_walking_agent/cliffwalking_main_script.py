@@ -15,10 +15,7 @@ tau = 25
 
 
 # se declara una semilla aleatoria
-random_state = np.random.RandomState(47)
-
-# el tiempo de corte del agente son 1000 time-steps
-cutoff_time = 1000
+random_state = np.random.RandomState(42)
 
 # instanciamos nuestro agente
 agent = cW.CliffWalkingAgent()
@@ -28,8 +25,6 @@ agent.episodes_to_run = 3000
 
 agent.random_state = random_state
 
-# establece el tiempo de corte de cada episodio
-agent.set_cutoff_time(cutoff_time)
 
 # inicializa el agente
 agent.init_agent()
@@ -84,7 +79,7 @@ for row in range(n_rows):
         state_values = []
 
         for action in range(n_actions):
-            state_values.append(agent.q.get((row * n_columns + column, action), -10))
+            state_values.append(agent.q.get((row * n_columns + column, action), -100))
 
         maximum_value = max(state_values)  # como usamos epsilon-greedy, determinamos la acción que arroja máximo valor
         state_values.remove(maximum_value)  # removemos el ítem asociado con la acción de máximo valor
@@ -95,7 +90,7 @@ for row in range(n_rows):
         value_matrix[row, column] = maximum_value
 
 # el valor del estado objetivo se asigna en 1 (reward recibido al llegar) para que se coloree de forma apropiada
-value_matrix[3, 11] = -1
+value_matrix[3, 11] = 1
 
 # se grafica la matriz de valor
 plt.imshow(value_matrix, cmap=plt.cm.RdYlGn)

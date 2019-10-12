@@ -9,13 +9,10 @@ class CliffWalkingAgent:
 
         # basic configuration
         self._environment_name = "CliffWalking-v0"
-        self._environment_instance = None  # (note that the "None" variables have values yet to be assigned)
-        self.random_state = None  # type: np.random.RandomState
+        self._environment_instance = None
+        self.random_state = None
         self._cutoff_time = None
         self._hyper_parameters = None
-
-        # whether ot not to display a video of the agent execution at each episode
-        self.display_video = True
 
         # list that contains the amount of time-steps of the episode. It is used as a way to score the performance of
         # the agent.
@@ -31,12 +28,8 @@ class CliffWalkingAgent:
         self._alpha = 0.5
         self._gamma = 0.9
         self._epsilon = 0.1
-        self.episodes_to_run = 3000  # amount of episodes to run for each run of the agent
+        self.episodes_to_run = 500  # amount of episodes to run for each run of the agent
         self.actions = None
-
-        # matrix with 3 columns, where each row represents the action, reward and next state obtained from the agent
-        # executing an action in the previous state
-        self.action_reward_state_trace = []
 
     def set_cutoff_time(self, cutoff_time):
         """
@@ -70,7 +63,6 @@ class CliffWalkingAgent:
         # last run is cleared
         self.timesteps_of_episode = []
         self.reward_of_episode = []
-        self.action_reward_state_trace = []
 
         # q values are restarted
         self.q = {}
@@ -96,23 +88,25 @@ class CliffWalkingAgent:
             # an instance of an episode is run until it fails or until it reaches 200 time-steps
 
             # resets the environment, obtaining the first state observation
-            observation = self._environment_instance.reset()
-
-            # a number of four digits representing the actual state is obtained
-            state = observation
+            state = self._environment_instance.reset()
 
             episode_reward = 0
+            done = False
+            t = 0
 
-            for t in range(self._cutoff_time):
+            while not done:
 
                 # Pick an action based on the current state
                 action = self.choose_action(state)
                 # Execute the action and get feedback
                 observation, reward, done, info = self._environment_instance.step(action)
-                episode_reward += reward
 
-                # current state transition is saved
-                self.action_reward_state_trace.append([action, reward, observation])
+                if done:
+                    reward = +1
+                elif reward == -1:
+                    reward = 0
+                
+                episode_reward += reward
 
                 # Digitize the observation to get a state
                 next_state = observation
@@ -121,11 +115,11 @@ class CliffWalkingAgent:
                     self.learn(state, action, reward, next_state)
                     state = next_state
                 else:
-
                     self.learn(state, action, reward, next_state)
                     self.timesteps_of_episode = np.append(self.timesteps_of_episode, [int(t + 1)])
-                    self.reward_of_episode = np.append(self.reward_of_episode, episode_reward)
-                    break
+                    self.reward_of_episode = np.append(self.reward_of_episode, max(episode_reward, -100))
+
+                t += 1
 
         return self.reward_of_episode.mean()
 
@@ -133,11 +127,11 @@ class CliffWalkingAgent:
         """
         Chooses an action according to the learning previously performed
         """
-        q = [self.q.get((state, a), 0) for a in self.actions]
+        q = [self.q.get((state, a), 0.0) for a in self.actions]
         max_q = max(q)
 
         if self.random_state.uniform() < self._epsilon:
-            return self.random_state.choice(self.actions)  # a random action is returned
+            return self.random_state.choice(self.actions)  # a random action is selected
 
         count = q.count(max_q)
 
