@@ -1,17 +1,17 @@
 # Cambios para 2019
 - Viernes 18/10:
-  - Teoríco
+  - Teóríco
     - Diferencia entre RL, Aprendizaje Supervisado y Aprendizaje No Supervisado.
     - Modelo Agente-Entorno.
     - Agente situado.
     - Aprendizaje por Refuerzos
     - MDP
-  - Práctico
+  - Práctico:
     - Ejemplos practicos basados en la ECI.
 	
 RECREO
 
-  - Teoríco
+  - Teóríco
     - Explicar trade off entre exploración y explotación.
     - SARSA
       - Usar The Cliff para mostrar "e-greedy".
@@ -28,10 +28,10 @@ RECREO
     - Opcional: Implementar SARSA y Q-Learning con política Softmax
   
 - Viernes 25/10:
-  - Teoríco:
+  - Teóríco:
     - Métodos aproximados
-    - Deep RL.
-    - Problemas (Triada Mortal)
+    - Deep RL
+    - Problemas (Tríada Mortal)
     - DQN
   - Practico:
     - Lab del año pasado.
