@@ -57,9 +57,7 @@ def draw_value_matrix(q):
 
             maximum_value = max(state_values)  # determinamos la acción que arroja máximo valor
 
-            # el valor de la matriz para la mejor acción es el máximo valor por la probabilidad de que el mismo sea elegido
-            # (que es 1-epsilon por la probabilidad de explotación más 1/4 * epsilon por probabilidad de que sea elegido al
-            # azar cuando se opta por una acción exploratoria)
+
             q_value_matrix[row, column] = maximum_value
 
     # el valor del estado objetivo se asigna en -1 (reward recibido al llegar) para que se coloree de forma apropiada
